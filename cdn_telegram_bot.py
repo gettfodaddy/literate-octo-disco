@@ -60,6 +60,11 @@ SERVICES: dict[str, Service] = {
         token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
         login_url="https://dashboard.turboflare.ru/login",
     ),
+    "turboflare_beeline": Service(
+        label="TurboFlare → BeelineCDN",
+        token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
+        login_url="https://cdn.beeline.ru/login",
+    ),
 }
 ALLOWED_USER_IDS: frozenset[int] = frozenset()
 
@@ -111,6 +116,7 @@ def home_keyboard() -> InlineKeyboardMarkup:
         [
             [InlineKeyboardButton("🟡  BeelineCDN", callback_data="service:beeline")],
             [InlineKeyboardButton("🔵  TurboFlare", callback_data="service:turboflare")],
+            [InlineKeyboardButton("🔵  TurboFlare → BeelineCDN", callback_data="service:turboflare_beeline")],
             [InlineKeyboardButton("ℹ️  О безопасности", callback_data="about:security")],
         ]
     )
@@ -499,7 +505,10 @@ def main() -> None:
         entry_points=[CommandHandler("start", show_home, filters=filters.ChatType.PRIVATE)],
         states={
             CHOOSE_SERVICE: [
-                CallbackQueryHandler(choose_service, pattern=r"^service:(beeline|turboflare)$"),
+                CallbackQueryHandler(
+                    choose_service,
+                    pattern=r"^service:(beeline|turboflare|turboflare_beeline)$",
+                ),
                 CallbackQueryHandler(about_security, pattern=r"^about:security$"),
                 CallbackQueryHandler(back_to_services, pattern=r"^back:services$"),
             ],

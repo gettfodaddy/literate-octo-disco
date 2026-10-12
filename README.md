@@ -1,6 +1,13 @@
 # CDN Access Telegram Bot
 
-Private Telegram bot for requesting a BeelineCDN or TurboFlare access link.
+Private Telegram bot for requesting BeelineCDN and TurboFlare access links.
+
+The service menu includes `TurboFlare → BeelineCDN`: it submits the entered
+credentials to TurboFlare's token endpoint and constructs the returned-token
+login URL for BeelineCDN. This cross-service token acceptance is inherited from
+the requested integration and has not been independently verified; TurboFlare
+credentials may be rejected by BeelineCDN if the providers do not share token
+validation.
 
 ## Security behavior
 
