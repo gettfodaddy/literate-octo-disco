@@ -47,25 +47,42 @@ class Service:
     label: str
     token_url: str
     login_url: str
+    credential_source: str
 
 
 SERVICES: dict[str, Service] = {
     "beeline": Service(
-        label="BeelineCDN",
+        label="CDNVideo → Beeline CDN",
         token_url="https://api.cdnvideo.ru/app/oauth/v1/token/",
         login_url="https://cdn.beeline.ru/login",
+        credential_source="CDNVideo",
     ),
-    "turboflare": Service(
-        label="TurboFlare",
-        token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
+    "cdnvideo_turboflare": Service(
+        label="CDNVideo → Turboflare",
+        token_url="https://api.cdnvideo.ru/app/oauth/v1/token/",
         login_url="https://dashboard.turboflare.ru/login",
+        credential_source="CDNVideo",
     ),
     "turboflare_beeline": Service(
-        label="TurboFlare → BeelineCDN",
+        label="Turboflare → Beeline CDN",
         token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
         login_url="https://cdn.beeline.ru/login",
+        credential_source="Turboflare",
+    ),
+    "turboflare_cdnvideo": Service(
+        label="Turboflare → CDNVideo",
+        token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
+        login_url="https://dashboard.cdnvideo.ru/login",
+        credential_source="Turboflare",
+    ),
+    "turboflare": Service(
+        label="Turboflare",
+        token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
+        login_url="https://dashboard.turboflare.ru/login",
+        credential_source="Turboflare",
     ),
 }
+SERVICE_CALLBACK_PATTERN = r"^service:(?:" + "|".join(re.escape(key) for key in SERVICES) + r")$"
 ALLOWED_USER_IDS: frozenset[int] = frozenset()
 
 
@@ -114,9 +131,10 @@ async def check_access(update: Update, *, notify: bool = True) -> bool:
 def home_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("🟡  BeelineCDN", callback_data="service:beeline")],
-            [InlineKeyboardButton("🔵  TurboFlare", callback_data="service:turboflare")],
-            [InlineKeyboardButton("🔵  TurboFlare → BeelineCDN", callback_data="service:turboflare_beeline")],
+            *[
+                [InlineKeyboardButton(service.label, callback_data=f"service:{key}")]
+                for key, service in SERVICES.items()
+            ],
             [InlineKeyboardButton("ℹ️  О безопасности", callback_data="about:security")],
         ]
     )
@@ -171,8 +189,9 @@ async def choose_service(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await query.edit_message_text(
         f"<b>{escape(service.label.upper())}</b>  <code>ШАГ 1 ИЗ 3</code>\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "Отправь email, привязанный к аккаунту.\n\n"
-        "<i>Данные используются только для запроса токена выбранному сервису.</i>",
+        f"Отправь email аккаунта <b>{escape(service.credential_source)}</b>.\n\n"
+        f"<i>Email и пароль отправляются в {escape(service.credential_source)}. "
+        "Ссылка входа не подтверждает доступность CDN-раздачи в целевом кабинете.</i>",
             reply_markup=service_keyboard(),
     )
     return EMAIL
@@ -422,7 +441,8 @@ async def got_password(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     await status.edit_text(
         f"<b>{escape(service.label.upper())}</b>  <code>ГОТОВО</code>\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "✅ Ссылка входа создана. Открой её кнопкой ниже.\n\n"
+        "✅ Ссылка входа создана. Открой её кнопкой ниже.\n"
+        "Принятие токена целевым кабинетом и доступность CDN-раздачи не проверены.\n\n"
         f"⏱ {lifetime_text}\n"
         "🔐 Ссылка содержит секретный токен. Не пересылай её; после входа удали это сообщение.",
         reply_markup=InlineKeyboardMarkup(
@@ -507,7 +527,7 @@ def main() -> None:
             CHOOSE_SERVICE: [
                 CallbackQueryHandler(
                     choose_service,
-                    pattern=r"^service:(beeline|turboflare|turboflare_beeline)$",
+                    pattern=SERVICE_CALLBACK_PATTERN,
                 ),
                 CallbackQueryHandler(about_security, pattern=r"^about:security$"),
                 CallbackQueryHandler(back_to_services, pattern=r"^back:services$"),

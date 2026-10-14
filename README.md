@@ -2,12 +2,22 @@
 
 Private Telegram bot for requesting BeelineCDN and TurboFlare access links.
 
-The service menu includes `TurboFlare → BeelineCDN`: it submits the entered
-credentials to TurboFlare's token endpoint and constructs the returned-token
-login URL for BeelineCDN. This cross-service token acceptance is inherited from
-the requested integration and has not been independently verified; TurboFlare
-credentials may be rejected by BeelineCDN if the providers do not share token
-validation.
+## Login routes
+
+| Menu route | Credential/token source | Login destination |
+|---|---|---|
+| CDNVideo → Beeline CDN | api.cdnvideo.ru | cdn.beeline.ru |
+| CDNVideo → Turboflare | api.cdnvideo.ru | dashboard.turboflare.ru |
+| Turboflare → Beeline CDN | dashboard.turboflare.ru | cdn.beeline.ru |
+| Turboflare → CDNVideo | dashboard.turboflare.ru | dashboard.cdnvideo.ru |
+
+Direct Turboflare login remains available. The legacy callback `service:beeline`
+now explicitly identifies CDNVideo as the credential source.
+
+The bot authenticates an existing account at the source and builds a target
+login URL. It does not register accounts, activate services, or verify that the
+target accepts the token. Cross-service login and CDN delivery must be tested
+separately. Enter credentials belonging to the displayed source service.
 
 ## Security behavior
 
