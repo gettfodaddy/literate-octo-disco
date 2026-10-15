@@ -75,6 +75,18 @@ SERVICES: dict[str, Service] = {
         login_url="https://dashboard.cdnvideo.ru/login",
         credential_source="Turboflare",
     ),
+    "cdnvideo_platformcraft": Service(
+        label="CDNVideo → Platformcraft",
+        token_url="https://api.cdnvideo.ru/app/oauth/v1/token/",
+        login_url="https://global.platformcraft.com/login",
+        credential_source="CDNVideo",
+    ),
+    "turboflare_platformcraft": Service(
+        label="Turboflare → Platformcraft",
+        token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",
+        login_url="https://global.platformcraft.com/login",
+        credential_source="Turboflare",
+    ),
     "turboflare": Service(
         label="Turboflare",
         token_url="https://dashboard.turboflare.ru/app/oauth/v1/token/",

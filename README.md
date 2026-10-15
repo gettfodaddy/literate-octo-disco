@@ -10,6 +10,10 @@ Private Telegram bot for requesting BeelineCDN and TurboFlare access links.
 | CDNVideo → Turboflare | api.cdnvideo.ru | dashboard.turboflare.ru |
 | Turboflare → Beeline CDN | dashboard.turboflare.ru | cdn.beeline.ru |
 | Turboflare → CDNVideo | dashboard.turboflare.ru | dashboard.cdnvideo.ru |
+| CDNVideo → Platformcraft | api.cdnvideo.ru | global.platformcraft.com |
+| Turboflare → Platformcraft | dashboard.turboflare.ru | global.platformcraft.com |
+
+Platformcraft routes use the source token unchanged in the login URL; acceptance by Platformcraft is unverified.
 
 Direct Turboflare login remains available. The legacy callback `service:beeline`
 now explicitly identifies CDNVideo as the credential source.
