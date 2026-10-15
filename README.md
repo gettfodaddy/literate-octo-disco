@@ -58,3 +58,7 @@ On Windows PowerShell, activate the environment with `.venv\Scripts\Activate.ps1
 For multiple trusted users, list IDs separated by commas. Do not commit `.env` files or paste the bot token into chat. Run one bot process at a time; the rate-limit counters are process-local.
 
 The service URLs and expected response fields are inherited from the supplied script and have not been independently verified against provider documentation.
+
+## Button appearance
+
+CDNVideo routes use primary (blue), Turboflare routes success (green). Cancel/delete use danger (red). Telegram controls label alignment, exact colors, and layout rendering; update older clients if styles are not displayed. Requires python-telegram-bot 22.8 per requirements.txt.

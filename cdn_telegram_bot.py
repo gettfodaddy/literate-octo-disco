@@ -148,8 +148,12 @@ def home_keyboard() -> InlineKeyboardMarkup:
     )
     rows = [
         [
-            InlineKeyboardButton(SERVICES[key].label, callback_data=f"service:{key}")
-            for key in pair
+            InlineKeyboardButton(
+                SERVICES[key].label,
+                callback_data=f"service:{key}",
+                style="primary" if column == 0 else "success",
+            )
+            for column, key in enumerate(pair)
         ]
         for pair in route_rows
     ]
@@ -161,7 +165,7 @@ def service_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("↩️  К выбору сервиса", callback_data="back:services")],
-            [InlineKeyboardButton("✖️  Отмена", callback_data="cancel")],
+            [InlineKeyboardButton("✖️  Отмена", callback_data="cancel", style="danger")],
         ]
     )
 
@@ -175,10 +179,12 @@ async def show_home(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if message is None:
         return ConversationHandler.END
     await message.reply_text(
-        "<b>CDN ACCESS</b>  <code>PRIVATE CONSOLE</code>\n"
-        "━━━━━━━━━━━━━━━━━━\n"
+        "<b>CDN ACCESS</b>\n"
+        "<i>Личная панель входа</i>\n\n"
         "Создай временную ссылку входа для своего CDN-аккаунта.\n\n"
-        "<b>1</b>  Выбери сервис\n"
+        "<b>Выбери источник аккаунта:</b>\n"
+        "🔵 CDNVideo — слева · 🟢 Turboflare — справа\n\n"
+        "<b>1</b>  Выбери направление входа\n"
         "<b>2</b>  Подтверди email и пароль\n"
         "<b>3</b>  Открой ссылку и удали её из чата\n\n"
         "🔐 Только личный чат и заранее разрешённые Telegram ID.",
@@ -464,8 +470,8 @@ async def got_password(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         "🔐 Ссылка содержит секретный токен. Не пересылай её; после входа удали это сообщение.",
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("↗  Открыть аккаунт", url=login_url)],
-                [InlineKeyboardButton("🧹  Удалить сообщение", callback_data="hide_token")],
+                [InlineKeyboardButton("↗  Открыть аккаунт", url=login_url, style="success")],
+                [InlineKeyboardButton("🧹  Удалить сообщение", callback_data="hide_token", style="danger")],
             ]
         ),
         disable_web_page_preview=True,
