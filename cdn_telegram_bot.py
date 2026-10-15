@@ -141,15 +141,20 @@ async def check_access(update: Update, *, notify: bool = True) -> bool:
 
 
 def home_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            *[
-                [InlineKeyboardButton(service.label, callback_data=f"service:{key}")]
-                for key, service in SERVICES.items()
-            ],
-            [InlineKeyboardButton("ℹ️  О безопасности", callback_data="about:security")],
-        ]
+    route_rows = (
+        ("beeline", "turboflare_beeline"),
+        ("cdnvideo_turboflare", "turboflare_cdnvideo"),
+        ("cdnvideo_platformcraft", "turboflare_platformcraft"),
     )
+    rows = [
+        [
+            InlineKeyboardButton(SERVICES[key].label, callback_data=f"service:{key}")
+            for key in pair
+        ]
+        for pair in route_rows
+    ]
+    rows.append([InlineKeyboardButton("ℹ️  О безопасности", callback_data="about:security")])
+    return InlineKeyboardMarkup(rows)
 
 
 def service_keyboard() -> InlineKeyboardMarkup:

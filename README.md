@@ -15,7 +15,7 @@ Private Telegram bot for requesting BeelineCDN and TurboFlare access links.
 
 Platformcraft routes use the source token unchanged in the login URL; acceptance by Platformcraft is unverified.
 
-Direct Turboflare login remains available. The legacy callback `service:beeline`
+The menu shows three paired rows: CDNVideo routes on the left and Turboflare routes on the right. Direct Turboflare login is hidden; its legacy callback remains compatible with older messages. The legacy callback `service:beeline`
 now explicitly identifies CDNVideo as the credential source.
 
 The bot authenticates an existing account at the source and builds a target
